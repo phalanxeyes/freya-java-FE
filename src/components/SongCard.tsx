@@ -1,7 +1,7 @@
 interface SongCardProps {
     duration: number;
     name: string;
-    coverUrl: string;
+    coverUrl: string | null;
 }
 const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
