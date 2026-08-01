@@ -3,4 +3,5 @@ export interface Song{
     duration: number;
     name: string;
     lyrics: string;
+    coverUrl: string | null;
 }
