@@ -1,12 +1,18 @@
 import { useState } from 'react'
+import SongCard from '@components/SongCard'
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  //const [songCards, setSongCards] = useState([])
 
   return (
-  <h1 class="text-3xl font-bold underline">
-    Hello world!
-  </h1>
+      <div>
+        <h1 className="text-3xl font-bold underline text-cyan-300">
+          Hello world!
+        </h1>
+        <SongCard name={ "pepe" }></SongCard>
+        <SongCard name={ "scatman" }></SongCard>
+      </div>
   )
 }
 
