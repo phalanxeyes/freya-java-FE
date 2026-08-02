@@ -5,7 +5,7 @@ export default function Navbar() {
         <nav className="flex items-center justify-between px-6 py-4">
             <Link to="/" className="flex items-center gap-2">
                 <img src="/icon.png" width={40} height={40} alt="Icono de Freya" />
-                <span className="text-xl font-bold text-amber-900">Freya</span>
+                <span className="text-xl font-bold font-poppins text-amber-900">Freya</span>
             </Link>
 
             <div className="flex items-center gap-4">
