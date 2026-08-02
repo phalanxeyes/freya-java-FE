@@ -16,6 +16,7 @@ export default function Home() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {songs.map((song: Song) => (
                 <SongCard
+                    id={song.id}
                     key={song.id}
                     duration={song.duration}
                     name={song.name}
