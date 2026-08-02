@@ -1,34 +1,43 @@
 import { useParams } from "react-router";
-import {songService} from "@api/songService.ts";
-import {useEffect, useState} from "react";
-import type {Song} from "@api/types.ts";
+import { useEffect, useState } from "react";
+import { songService } from "@api/songService";
+import type { Song } from "@api/types";
+import SongHeader from "@components/song/SongHeader";
+import SongLyrics from "@components/song/SongLyrics";
+import LoadingState from "@components/LoadingState";
 
-export default function SongView(){
+export default function SongView() {
     const { id } = useParams<{ id: string }>();
 
     const [loading, setLoading] = useState<boolean>(true);
     const [song, setSong] = useState<Song>();
 
     useEffect(() => {
-        if(!(typeof id === "string")){
-            return;
-        }
-        setLoading(true)
+        if (typeof id !== "string") return;
+
+        setLoading(true);
         songService.getById(id).then((s) => {
             setSong(s);
-            setLoading(false)
-        })
+            setLoading(false);
+        });
     }, [id]);
 
-    if(loading){
-        return (
-            <div>Cargando...</div>
-        )
+    if (loading) {
+        return <LoadingState />;
     }
+
+    if (!song) {
+        return (
+            <div className="flex min-h-[40vh] items-center justify-center">
+                <span className="text-sm text-neutral-500">Canción no encontrada.</span>
+            </div>
+        );
+    }
+
     return (
         <div>
-            <h1>{song?.name}</h1>
+            <SongHeader song={song} />
+            <SongLyrics lyrics={song.lyrics} />
         </div>
-    )
-
+    );
 }
