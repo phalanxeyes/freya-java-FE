@@ -1,4 +1,4 @@
-import {Link} from "react-router";
+import { Link } from "react-router";
 
 interface SongCardProps {
     id: string;
@@ -6,6 +6,7 @@ interface SongCardProps {
     name: string;
     coverUrl: string | null;
 }
+
 const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -14,11 +15,11 @@ const formatDuration = (seconds: number): string => {
 
 export default function SongCard({ id, duration, name, coverUrl }: SongCardProps) {
     return (
-        <div className="w-full max-w-[200px] rounded-lg bg-neutral-900 p-4 transition-colors hover:bg-neutral-800/80 group">
+        <div className="w-full max-w-[200px] rounded-lg bg-white/60 p-4 shadow-sm ring-1 ring-amber-900/5 backdrop-blur-sm transition-all hover:bg-white hover:shadow-md group">
             <Link
-                to={"/song/"+id}
+                to={"/song/" + id}
                 title={name}
-                className="relative block aspect-square w-full overflow-hidden rounded bg-neutral-800 shadow-md"
+                className="relative block aspect-square w-full overflow-hidden rounded bg-amber-100 shadow-sm"
             >
                 <img
                     src={coverUrl ?? "https://www.indieground.net/images/blog/2024/indieblog-best-album-covers-2010s-28.jpg"}
@@ -28,10 +29,10 @@ export default function SongCard({ id, duration, name, coverUrl }: SongCardProps
             </Link>
 
             <div className="mt-3">
-                <h3 className="truncate text-sm font-semibold text-white" title={name}>
+                <h3 className="truncate text-sm font-semibold text-neutral-900" title={name}>
                     {name}
                 </h3>
-                <p className="mt-1 text-xs text-neutral-400">
+                <p className="mt-1 text-xs text-neutral-500">
                     {formatDuration(duration)}
                 </p>
             </div>
