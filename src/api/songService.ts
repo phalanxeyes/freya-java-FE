@@ -1,4 +1,4 @@
-import { mockSongs } from './dummydata';
+import { mockSongs } from './dummyData';
 import type { Song } from '@api/types';
 
 const FAKE_DELAY = 400;
