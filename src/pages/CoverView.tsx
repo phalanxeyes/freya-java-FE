@@ -1,0 +1,70 @@
+import { useParams, Link } from "react-router";
+import { useEffect, useState } from "react";
+import { coverService } from "@api/coverService";
+import type { Cover } from "@api/types";
+import LoadingState from "@components/LoadingState";
+
+function getYoutubeId(url: string): string | null {
+    const match = url.match(/(?:youtu\.be\/|v=|embed\/)([a-zA-Z0-9_-]{11})/);
+    return match ? match[1] : null;
+}
+
+export default function CoverView() {
+    const { id } = useParams<{ id: string }>();
+
+    const [loading, setLoading] = useState<boolean>(true);
+    const [cover, setCover] = useState<Cover>();
+
+    useEffect(() => {
+        if (typeof id !== "string") return;
+
+        setLoading(true);
+        coverService.getById(id).then((c) => {
+            setCover(c);
+            setLoading(false);
+        });
+    }, [id]);
+
+    if (loading) {
+        return <LoadingState />;
+    }
+
+    if (!cover) {
+        return (
+            <div className="flex min-h-[40vh] items-center justify-center">
+                <span className="text-sm text-neutral-500">Cover no encontrado.</span>
+            </div>
+        );
+    }
+
+    const videoId = cover.youtubeUrl ? getYoutubeId(cover.youtubeUrl) : null;
+
+    return (
+        <div>
+            {cover.song && (
+                <p className="text-sm text-neutral-600">
+                    Cover de{" "}
+                    <Link to={`/song/${cover.song.id}`} className="font-medium text-neutral-900 hover:underline">
+                        {cover.song.name}
+                    </Link>
+                </p>
+            )}
+
+            <div className="mt-3 aspect-video w-full overflow-hidden rounded-lg bg-neutral-900 shadow-md">
+                {videoId ? (
+                    <iframe
+                        className="h-full w-full"
+                        src={`https://www.youtube.com/embed/${videoId}`}
+                        title="Cover video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    />
+                ) : (
+                    <div className="flex h-full w-full items-center justify-center text-sm text-neutral-500">
+                        Sin video disponible
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}

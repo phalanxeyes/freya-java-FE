@@ -1,17 +1,14 @@
-import { type Song } from './types';
-import { mockSongs } from '@api/dummyData';
+import { mockSongs } from './dummydata';
+import type { Song } from '@api/types';
 
-const delay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
+const FAKE_DELAY = 400;
+
+const delay = <T>(value: T): Promise<T> =>
+    new Promise((resolve) => setTimeout(() => resolve(value), FAKE_DELAY));
 
 export const songService = {
-    getAll: async (): Promise<Song[]> => {
-        await delay();
-        return [...mockSongs];
-    },
-    getById: async (id: string): Promise<Song> => {
-        await delay();
-        const song = mockSongs.find(s => s.id === id);
-        if (!song) throw new Error('Canción no encontrada');
-        return song;
-    }
+    getAll: (): Promise<Song[]> => delay(mockSongs),
+
+    getById: (id: string): Promise<Song | undefined> =>
+        delay(mockSongs.find((s: Song) => s.id === id)),
 };

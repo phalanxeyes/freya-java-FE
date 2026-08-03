@@ -4,6 +4,7 @@ import { songService } from "@api/songService";
 import type { Song } from "@api/types";
 import SongHeader from "@components/song/SongHeader";
 import SongLyrics from "@components/song/SongLyrics";
+import SongCovers from "@components/song/SongCovers";
 import LoadingState from "@components/LoadingState";
 
 export default function SongView() {
@@ -38,6 +39,7 @@ export default function SongView() {
         <div>
             <SongHeader song={song} />
             <SongLyrics lyrics={song.lyrics} />
+            <SongCovers covers={song.covers ?? []} />
         </div>
     );
 }

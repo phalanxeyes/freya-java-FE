@@ -6,6 +6,7 @@ export interface Song {
     coverUrl: string | null;
     artist?: Artist;
     album?: Album;
+    covers?: Cover[];
 }
 
 export interface Album {
@@ -20,4 +21,12 @@ export interface Artist {
     id: string;
     name: string;
     albums?: Album[];
+}
+
+export interface Cover {
+    id: string;
+    song?: Song;
+    youtubeUrl: string | null;
+    duration: number;
+    publishDate: Date;
 }
