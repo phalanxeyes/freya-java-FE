@@ -1,4 +1,5 @@
-import { type Song, type Album, type Artist, type Cover } from '@api/types';
+// src/mocks/songs.ts
+import { type Song, type Album, type Artist, type Cover, type User } from '@api/types';
 
 // ==========================================
 // 1. DUMMY DATA: ARTISTAS
@@ -11,7 +12,31 @@ export const mockArtists: Artist[] = [
 ];
 
 // ==========================================
-// 2. DUMMY DATA: ÁLBUMES
+// 2. DUMMY DATA: USUARIOS
+// ==========================================
+export const mockUsers: User[] = [
+    {
+        id: 'user-1',
+        name: 'Pepe Fernández',
+        creationDate: new Date('2023-02-10'),
+        email: 'pepe.fernandez@example.com'
+    },
+    {
+        id: 'user-2',
+        name: 'Lionel Mechi',
+        creationDate: new Date('2022-08-15'),
+        email: 'fifa.futbol.gol@example.com'
+    },
+    {
+        id: 'user-3',
+        name: 'Ariana Grande',
+        creationDate: new Date('2024-01-03'),
+        email: 'ariana.grande@example.com'
+    }
+];
+
+// ==========================================
+// 3. DUMMY DATA: ÁLBUMES
 // ==========================================
 export const mockAlbums: Album[] = [
     {
@@ -41,7 +66,7 @@ export const mockAlbums: Album[] = [
 ];
 
 // ==========================================
-// 3. DUMMY DATA: CANCIONES
+// 4. DUMMY DATA: CANCIONES
 // ==========================================
 export let mockSongs: Song[] = [
     {
@@ -100,35 +125,47 @@ Maybe you can show me how to love, maybe...`
     }
 ];
 
-// Relación inversa álbum -> canciones (corregido el índice de After Hours)
+// Relación inversa álbum -> canciones
 mockAlbums[0].songs = [mockSongs[0]];
 mockAlbums[1].songs = [mockSongs[1]];
 mockAlbums[2].songs = [mockSongs[2]];
-mockAlbums[3].songs = [mockSongs[4]]; // antes decía mockSongs[3], estaba mal
+mockAlbums[3].songs = [mockSongs[4]];
 
 // ==========================================
-// 4. DUMMY DATA: COVERS
+// 5. DUMMY DATA: COVERS
 // ==========================================
 export const mockCovers: Cover[] = [
     {
         id: 'cover-1',
         song: mockSongs[0], // Bohemian Rhapsody
-        youtubeUrl: 'https://www.youtube.com/watch?v=fJ9rUzIMcZQ'
+        youtubeUrl: 'https://www.youtube.com/watch?v=fJ9rUzIMcZQ',
+        duration: 362,
+        publishDate: new Date('2023-05-14'),
+        uploader: mockUsers[0]
     },
     {
         id: 'cover-2',
         song: mockSongs[0], // otro cover de la misma canción
-        youtubeUrl: 'https://youtu.be/QkCxE2Lh458'
+        youtubeUrl: 'https://youtu.be/QkCxE2Lh458',
+        duration: 340,
+        publishDate: new Date('2024-01-22'),
+        uploader: mockUsers[1]
     },
     {
         id: 'cover-3',
         song: mockSongs[1], // Billie Jean
-        youtubeUrl: 'https://www.youtube.com/watch?v=Zi_XLOBDo_Y'
+        youtubeUrl: 'https://www.youtube.com/watch?v=Zi_XLOBDo_Y',
+        duration: 289,
+        publishDate: new Date('2022-11-30'),
+        uploader: mockUsers[2]
     },
     {
         id: 'cover-4',
         song: mockSongs[4], // Blinding Lights
-        youtubeUrl: null // ejemplo sin video todavía
+        youtubeUrl: null, // ejemplo sin video todavía
+        duration: 205,
+        publishDate: new Date('2024-06-08'),
+        uploader: mockUsers[0]
     }
 ];
 

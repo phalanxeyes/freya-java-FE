@@ -1,6 +1,15 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useAuth } from "@context/AuthContext";
 
 export default function Navbar() {
+    const { isAuthenticated, user, logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate("/");
+    };
+
     return (
         <nav className="flex items-center justify-between px-6 py-4">
             <Link to="/" className="flex items-center gap-2">
@@ -9,12 +18,29 @@ export default function Navbar() {
             </Link>
 
             <div className="flex items-center gap-4">
-                <button className="text-sm text-neutral-700 hover:text-neutral-900 transition-colors">
-                    Log in
-                </button>
-                <button className="text-sm font-medium text-white px-4 py-1.5 rounded-full bg-amber-900 hover:bg-amber-800 transition-colors">
-                    Sign up
-                </button>
+                {isAuthenticated ? (
+                    <>
+                        <span className="text-sm text-neutral-700">Hola, {user?.name}</span>
+                        <button
+                            onClick={handleLogout}
+                            className="text-sm text-neutral-700 hover:text-neutral-900 transition-colors"
+                        >
+                            Cerrar sesión
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <Link to="/login" className="text-sm text-neutral-700 hover:text-neutral-900 transition-colors">
+                            Log in
+                        </Link>
+                        <Link
+                            to="/signup"
+                            className="text-sm font-medium text-white px-4 py-1.5 rounded-full bg-amber-900 hover:bg-amber-800 transition-colors"
+                        >
+                            Sign up
+                        </Link>
+                    </>
+                )}
             </div>
         </nav>
     )

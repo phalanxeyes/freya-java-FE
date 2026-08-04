@@ -29,4 +29,23 @@ export interface Cover {
     youtubeUrl: string | null;
     duration: number;
     publishDate: Date;
+    uploader: User;
+}
+
+export interface User{
+    id: string;
+    name: string;
+    creationDate: Date;
+    email: string;
+}
+
+//auth
+export interface AuthCredentials {
+    email: string;
+    password: string;
+}
+
+export interface AuthResponse {
+    token: string;
+    user: User;
 }

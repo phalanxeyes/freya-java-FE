@@ -29,6 +29,7 @@
       "@api/*": ["src/api/*"],
       "@layouts/*" : ["src/layouts/*"],
       "@pages/*" : ["src/pages/*"],
+      "@context/*": ["src/context/*"],
     }
   },
   "include": ["src"]

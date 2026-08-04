@@ -1,3 +1,4 @@
+// src/components/song/SongCoverCard.tsx
 import { Link } from "react-router";
 import type { Cover } from "@api/types";
 
@@ -9,6 +10,12 @@ function getYoutubeId(url: string): string | null {
     const match = url.match(/(?:youtu\.be\/|v=|embed\/)([a-zA-Z0-9_-]{11})/);
     return match ? match[1] : null;
 }
+
+const formatDuration = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+};
 
 export default function SongCoverCard({ cover }: SongCoverCardProps) {
     const videoId = cover.youtubeUrl ? getYoutubeId(cover.youtubeUrl) : null;
@@ -30,7 +37,14 @@ export default function SongCoverCard({ cover }: SongCoverCardProps) {
                         Sin video
                     </div>
                 )}
+                <span className="absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white">
+          {formatDuration(cover.duration)}
+        </span>
             </div>
+
+            <p className="mt-2 truncate text-xs text-neutral-600">
+                por <span className="font-medium text-neutral-900">{cover.uploader.name}</span>
+            </p>
         </Link>
     );
 }
