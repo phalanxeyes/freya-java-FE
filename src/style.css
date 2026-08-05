@@ -26,3 +26,18 @@
 .animate-float {
     animation: float 4s ease-in-out infinite;
 }
+
+@keyframes carousel-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+.animate-carousel {
+    animation: carousel-scroll linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-carousel {
+        animation: none;
+    }
+}
