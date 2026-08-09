@@ -38,7 +38,7 @@ export default function Home() {
                     Canciones
                 </h2>
                 <div className="mt-3">
-                    <Carousel speed={230}>
+                    <Carousel speed={15}>
                         {songs.map((song) => (
                             <div key={song.id} className="w-36 sm:w-44">
                                 <SongCard
@@ -58,7 +58,7 @@ export default function Home() {
                     Últimos covers
                 </h2>
                 <div className="mt-3">
-                    <Carousel speed={210}>
+                    <Carousel speed={20}>
                         {covers.map((cover) => (
                             <div key={cover.id} className="w-56">
                                 <SongCoverCard cover={cover} />
