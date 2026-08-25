@@ -1,14 +1,12 @@
-import { mockCovers } from './dummyData';
-import type { Cover } from '@api/types';
+import { createResourceClient } from './api';
+import { type CreateCoverDTO, type CoverDTO  } from './api.d';
 
-const FAKE_DELAY = 400;
-
-const delay = <T>(value: T): Promise<T> =>
-    new Promise((resolve) => setTimeout(() => resolve(value), FAKE_DELAY));
+const client = createResourceClient('covers');
 
 export const coverService = {
-    getAll: (): Promise<Cover[]> => delay(mockCovers),
-
-    getById: (id: string): Promise<Cover | undefined> =>
-        delay(mockCovers.find((c: Cover) => c.id === id)),
+  getAll: () => client.getAll<CoverDTO[]>(),
+  getById: (id: string) => client.getById<CoverDTO>(id),
+  create: (data: CreateCoverDTO) => client.create<CreateCoverDTO, CoverDTO>(data),
+  update: (id: string, data: CreateCoverDTO) => client.update<CreateCoverDTO, CoverDTO>(id, data),
+  delete: (id: string) => client.delete(id),
 };

@@ -1,7 +1,26 @@
+export interface Artist {
+    id: string;
+    name: string;
+}
+
+export interface Album {
+    id: string;
+    name: string;
+    date: Date | string;
+    artist?: Artist;
+}
+
+export interface User {
+    id: string;
+    name: string;
+    email: string;
+    creationDate: Date | string;
+}
+
 export interface Song {
     id: string;
-    duration: number;
     name: string;
+    duration: number;
     lyrics: string;
     coverUrl: string | null;
     artist?: Artist;
@@ -9,40 +28,14 @@ export interface Song {
     covers?: Cover[];
 }
 
-export interface Album {
-    id: string;
-    name: string;
-    date: Date;
-    artist?: Artist;
-    songs?: Song[];
-}
-
-export interface Artist {
-    id: string;
-    name: string;
-    albums?: Album[];
-}
-
 export interface Cover {
     id: string;
-    song?: Song;
-    youtubeUrl: string | null;
     duration: number;
-    publishDate: Date;
+    youtubeUrl: string | null;
     uploader: User;
-}
-
-export interface User{
-    id: string;
-    name: string;
-    creationDate: Date;
-    email: string;
-}
-
-//auth
-export interface AuthCredentials {
-    email: string;
-    password: string;
+    publishDate: Date | string;
+    song: Song;
+    likes?: number;
 }
 
 export interface AuthResponse {

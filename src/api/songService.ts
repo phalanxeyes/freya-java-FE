@@ -1,14 +1,12 @@
-import { mockSongs } from './dummyData';
-import type { Song } from '@api/types';
+import { createResourceClient } from './api';
+import { type CreateSongDTO, type SongDTO  } from './api.d';
 
-const FAKE_DELAY = 400;
-
-const delay = <T>(value: T): Promise<T> =>
-    new Promise((resolve) => setTimeout(() => resolve(value), FAKE_DELAY));
+const client = createResourceClient('songs');
 
 export const songService = {
-    getAll: (): Promise<Song[]> => delay(mockSongs),
-
-    getById: (id: string): Promise<Song | undefined> =>
-        delay(mockSongs.find((s: Song) => s.id === id)),
+  getAll: () => client.getAll<SongDTO[]>(),
+  getById: (id: string) => client.getById<SongDTO>(id),
+  create: (data: CreateSongDTO) => client.create<CreateSongDTO, SongDTO>(data),
+  update: (id: string, data: CreateSongDTO) => client.update<CreateSongDTO, SongDTO>(id, data),
+  delete: (id: string) => client.delete(id),
 };

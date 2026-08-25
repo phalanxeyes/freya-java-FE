@@ -1,4 +1,4 @@
-import type { AuthResponse, User } from "@api/types";
+import type { AuthResponse, User } from "./types";
 import { mockUsers } from "./dummyData";
 
 const FAKE_DELAY = 500;
