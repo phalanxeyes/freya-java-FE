@@ -18,7 +18,7 @@ export default function SignUp() {
         setError(null);
         setLoading(true);
         try {
-            await register({ name, email, password });
+            await register({ userName: name, email, password });
             navigate("/");
         } catch (err) {
             setError(err instanceof Error ? err.message : "Error al registrarse");

@@ -1,7 +1,8 @@
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { songService } from "@api/songService";
-import type { Song } from "@api/types";
+import type { CoverDTO, SongDTO } from "@api/api.d";
+import { coverService } from "@api/coverService";
 import SongHeader from "@components/song/SongHeader";
 import SongLyrics from "@components/song/SongLyrics";
 import SongCovers from "@components/song/SongCovers";
@@ -11,16 +12,19 @@ export default function SongView() {
     const { id } = useParams<{ id: string }>();
 
     const [loading, setLoading] = useState<boolean>(true);
-    const [song, setSong] = useState<Song>();
+    const [song, setSong] = useState<SongDTO>();
+    const [covers, setCovers] = useState<CoverDTO[]>([]);
 
     useEffect(() => {
         if (typeof id !== "string") return;
 
         setLoading(true);
-        songService.getById(id).then((s) => {
-            setSong(s);
-            setLoading(false);
-        });
+        Promise.all([songService.getById(id), coverService.getAll()])
+            .then(([songResult, coversResult]) => {
+                setSong(songResult);
+                setCovers(coversResult.filter((cover) => cover.song.id === songResult.id));
+            })
+            .finally(() => setLoading(false));
     }, [id]);
 
     if (loading) {
@@ -39,7 +43,7 @@ export default function SongView() {
         <div>
             <SongHeader song={song} />
             <SongLyrics lyrics={song.lyrics} />
-            <SongCovers covers={song.covers ?? []} />
+            <SongCovers covers={covers} />
         </div>
     );
 }

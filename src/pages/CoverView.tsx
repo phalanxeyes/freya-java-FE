@@ -1,22 +1,17 @@
 import { useParams, Link } from "react-router";
 import { useEffect, useState } from "react";
 import { coverService } from "@api/coverService";
-import type { Cover } from "@api/types";
+import type { CoverDTO } from "@api/api.d";
 import LoadingState from "@components/LoadingState";
 import CoverPlayer from "@components/cover/CoverPlayer";
 import CoverUploaderCard from "@components/cover/CoverUploaderCard";
 import CoverComments from "@components/cover/CoverComments";
 
-function getYoutubeId(url: string): string | null {
-    const match = url.match(/(?:youtu\.be\/|v=|embed\/)([a-zA-Z0-9_-]{11})/);
-    return match ? match[1] : null;
-}
-
 export default function CoverView() {
     const { id } = useParams<{ id: string }>();
 
     const [loading, setLoading] = useState<boolean>(true);
-    const [cover, setCover] = useState<Cover>();
+    const [cover, setCover] = useState<CoverDTO>();
 
     useEffect(() => {
         if (typeof id !== "string") return;
@@ -40,8 +35,6 @@ export default function CoverView() {
         );
     }
 
-    const videoId = cover.youtubeUrl ? getYoutubeId(cover.youtubeUrl) : null;
-
     return (
         <div className="mx-auto max-w-5xl">
             <div className="flex flex-col-reverse gap-8 md:flex-row md:items-start">
@@ -57,13 +50,13 @@ export default function CoverView() {
                     )}
 
                     <div className="mt-4">
-                        <CoverUploaderCard uploader={cover.uploader} publishDate={cover.publishDate} />
+                        <CoverUploaderCard createdAt={cover.createdAt} playCount={cover.playCount} />
                     </div>
                 </div>
 
                 {/* Columna derecha: reproductor */}
                 <div className="w-full shrink-0 md:w-80">
-                    <CoverPlayer videoId={videoId} />
+                    <CoverPlayer videoId={null} />
                 </div>
             </div>
 

@@ -1,12 +1,12 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import type { User } from "@api/types";
+import type { UserDTO } from "@api/api.d";
 import { authService, type LoginPayload, type RegisterPayload } from "@api/authService";
 
 const TOKEN_KEY = "freya_token";
 const USER_KEY = "freya_user";
 
 interface AuthContextValue {
-    user: User | null;
+    user: UserDTO | null;
     token: string | null;
     isAuthenticated: boolean;
     login: (payload: LoginPayload) => Promise<void>;
@@ -17,7 +17,7 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<UserDTO | null>(null);
     const [token, setToken] = useState<string | null>(null);
 
     // Restaurar sesión al cargar la app
@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
-    const persistSession = (newToken: string, newUser: User) => {
+    const persistSession = (newToken: string, newUser: UserDTO) => {
         localStorage.setItem(TOKEN_KEY, newToken);
         localStorage.setItem(USER_KEY, JSON.stringify(newUser));
         setToken(newToken);

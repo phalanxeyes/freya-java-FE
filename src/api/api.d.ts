@@ -23,9 +23,17 @@ export interface CreateSongDTO {
 }
 
 export interface SongDTO {
+    id: number;
     duration: number;
     name: string;
     lyrics: string;
+    album: AlbumDTO;
+}
+
+export interface AlbumDTO {
+    id: number;
+    name: string;
+    artist: string;
 }
 
 export interface CreateUserDTO {

@@ -4,13 +4,13 @@ import SongCoverCard from '@components/song/SongCoverCard.tsx'
 import Carousel from '@components/Carousel.tsx'
 import { songService } from '@api/songService'
 import { coverService } from '@api/coverService'
-import type { Song, Cover } from '@api/types'
+import type { CoverDTO, SongDTO } from '@api/api.d'
 import LoadingState from "@components/LoadingState.tsx";
 
 export default function Home() {
     const [loading, setLoading] = useState<boolean>(true);
-    const [songs, setSongs] = useState<Song[]>([]);
-    const [covers, setCovers] = useState<Cover[]>([]);
+    const [songs, setSongs] = useState<SongDTO[]>([]);
+    const [covers, setCovers] = useState<CoverDTO[]>([]);
 
     useEffect(() => {
         setLoading(true);
@@ -19,7 +19,7 @@ export default function Home() {
                 setSongs(songsResult);
                 setCovers(
                     [...coversResult].sort(
-                        (a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()
+                    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                     )
                 );
                 setLoading(false);
@@ -45,7 +45,6 @@ export default function Home() {
                                     id={song.id}
                                     duration={song.duration}
                                     name={song.name}
-                                    coverUrl={song.coverUrl}
                                 />
                             </div>
                         ))}

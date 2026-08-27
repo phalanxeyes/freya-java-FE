@@ -1,7 +1,6 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 
-// TODO: mover a @api/types cuando exista Comment en el modelo real
 interface LocalComment {
     id: string;
     author: string;

@@ -1,8 +1,8 @@
-import type { Cover } from "@api/types";
+import type { CoverDTO } from "@api/api.d";
 import SongCoverCard from "@components/song/SongCoverCard";
 
 interface SongCoversProps {
-    covers: Cover[];
+    covers: CoverDTO[];
 }
 
 export default function SongCovers({ covers }: SongCoversProps) {
