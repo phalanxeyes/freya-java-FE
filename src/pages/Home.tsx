@@ -45,6 +45,7 @@ export default function Home() {
                                     id={song.id}
                                     duration={song.duration}
                                     name={song.name}
+                                    imgUrl={song.album.coverUrl}
                                 />
                             </div>
                         ))}

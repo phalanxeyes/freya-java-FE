@@ -5,6 +5,7 @@ interface SongCardProps {
     id: number;
     duration: number;
     name: string;
+    imgUrl?: string;
 }
 
 const formatDuration = (seconds: number): string => {
@@ -13,7 +14,7 @@ const formatDuration = (seconds: number): string => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
 };
 
-export default function SongCard({ id, duration, name }: SongCardProps) {
+export default function SongCard({ id, duration, name, imgUrl }: SongCardProps) {
     const cardRef = useRef<HTMLDivElement>(null);
     const [rotateX, setRotateX] = useState(0);
     const [rotateY, setRotateY] = useState(0);
@@ -62,7 +63,7 @@ export default function SongCard({ id, duration, name }: SongCardProps) {
                 className="relative block aspect-square w-full overflow-hidden rounded bg-amber-100 shadow-sm"
             >
                 <img
-                    src="https://www.indieground.net/images/blog/2024/indieblog-best-album-covers-2010s-28.jpg"
+                    src={imgUrl || "https://www.indieground.net/images/blog/2024/indieblog-best-album-covers-2010s-28.jpg"}
                     alt={name}
                     className={`h-full w-full object-cover transition-transform duration-300 ${isHovering ? "scale-105" : "scale-100"}`}
                 />
