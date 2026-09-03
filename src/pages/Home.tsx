@@ -32,11 +32,20 @@ export default function Home() {
     }
 
     return (
-        <div className="space-y-10">
+        <div className="space-y-12">
+            <header className="max-w-3xl rounded-3xl bg-espresso-800 px-6 py-8 shadow-xl shadow-espresso-900/25 sm:px-10 sm:py-12">
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-olive-bark-300">
+                    Tu espacio musical
+                </p>
+                <h1 className="mt-3 text-4xl font-bold tracking-tight text-sand-50 sm:text-5xl">
+                    Escuchá, reversioná, compartí.
+                </h1>
+            </header>
+
             <section>
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-amber-700">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-espresso-700">
                     Canciones
-                </h2>
+                </p>
                 <div className="mt-3">
                     <Carousel speed={15}>
                         {songs.map((song) => (
@@ -54,9 +63,9 @@ export default function Home() {
             </section>
 
             <section>
-                <h2 className="text-sm font-semibold uppercase tracking-wide text-amber-700">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-espresso-700">
                     Últimos covers
-                </h2>
+                </p>
                 <div className="mt-3">
                     <Carousel speed={20}>
                         {covers.map((cover) => (

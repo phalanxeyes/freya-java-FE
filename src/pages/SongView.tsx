@@ -34,7 +34,7 @@ export default function SongView() {
     if (!song) {
         return (
             <div className="flex min-h-[40vh] items-center justify-center">
-                <span className="text-sm text-neutral-500">Canción no encontrada.</span>
+                <span className="text-sm text-dusty-olive-600">Canción no encontrada.</span>
             </div>
         );
     }

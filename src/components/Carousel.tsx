@@ -68,7 +68,7 @@ export default function Carousel({ children, speed = 40 }: CarouselProps) {
 
             <button
                 onClick={() => nudge(-1)}
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition cursor-pointer"
+                className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-espresso-900/70 p-2 text-sand-50 shadow-md transition hover:bg-espresso-800 cursor-pointer"
                 aria-label="Previous slide"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -77,7 +77,7 @@ export default function Carousel({ children, speed = 40 }: CarouselProps) {
             </button>
             <button
                 onClick={() => nudge(1)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition cursor-pointer"
+                className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-espresso-900/70 p-2 text-sand-50 shadow-md transition hover:bg-espresso-800 cursor-pointer"
                 aria-label="Next slide"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

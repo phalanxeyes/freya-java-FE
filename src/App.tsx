@@ -20,7 +20,7 @@ function App() {
     }, []);
 
     if (isDown) {
-        return <h1> Service Down </h1>;
+        return <h1 className="px-6 py-16 text-center text-espresso-800">Service Down</h1>;
     }
 
     return (

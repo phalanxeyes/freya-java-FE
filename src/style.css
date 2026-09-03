@@ -3,6 +3,95 @@
 
 @theme {
     --font-poppins: "Poppins", sans-serif;
+    --color-dusty-olive-50: #f2f3f1;
+    --color-dusty-olive-100: #e6e7e4;
+    --color-dusty-olive-200: #ccd0c8;
+    --color-dusty-olive-300: #b3b8ad;
+    --color-dusty-olive-400: #9aa092;
+    --color-dusty-olive-500: #818877;
+    --color-dusty-olive-600: #676d5f;
+    --color-dusty-olive-700: #4d5247;
+    --color-dusty-olive-800: #33372f;
+    --color-dusty-olive-900: #1a1b18;
+    --color-dusty-olive-950: #121311;
+
+    --color-dark-walnut-50: #faefea;
+    --color-dark-walnut-100: #f6dfd5;
+    --color-dark-walnut-200: #edbfab;
+    --color-dark-walnut-300: #e39f82;
+    --color-dark-walnut-400: #da7f58;
+    --color-dark-walnut-500: #d15f2e;
+    --color-dark-walnut-600: #a74c25;
+    --color-dark-walnut-700: #7d391c;
+    --color-dark-walnut-800: #542612;
+    --color-dark-walnut-900: #2a1309;
+    --color-dark-walnut-950: #1d0d06;
+
+    --color-espresso-50: #f8efec;
+    --color-espresso-100: #f2ded9;
+    --color-espresso-200: #e5bdb3;
+    --color-espresso-300: #d89c8d;
+    --color-espresso-400: #cb7b67;
+    --color-espresso-500: #be5a41;
+    --color-espresso-600: #984834;
+    --color-espresso-700: #723627;
+    --color-espresso-800: #4c241a;
+    --color-espresso-900: #26120d;
+    --color-espresso-950: #1b0d09;
+
+    --color-olive-bark-50: #f7f3ed;
+    --color-olive-bark-100: #efe7dc;
+    --color-olive-bark-200: #e0d0b8;
+    --color-olive-bark-300: #d0b895;
+    --color-olive-bark-400: #c1a171;
+    --color-olive-bark-500: #b1894e;
+    --color-olive-bark-600: #8e6e3e;
+    --color-olive-bark-700: #6a522f;
+    --color-olive-bark-800: #47371f;
+    --color-olive-bark-900: #231b10;
+    --color-olive-bark-950: #19130b;
+
+    --color-sand-50: #f6f4ef;
+    --color-sand-100: #ece9df;
+    --color-sand-200: #dad3be;
+    --color-sand-300: #c7bd9e;
+    --color-sand-400: #b5a77d;
+    --color-sand-500: #a2915d;
+    --color-sand-600: #82744a;
+    --color-sand-700: #615738;
+    --color-sand-800: #413a25;
+    --color-sand-900: #201d13;
+    --color-sand-950: #17140d;
+
+
+
+}
+
+@layer base {
+    :root {
+        color: var(--color-dusty-olive-900);
+        background: var(--color-dusty-olive-50);
+        font-family: var(--font-poppins);
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+    }
+
+    body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        background: linear-gradient(
+            135deg,
+            var(--color-dusty-olive-50) 0%,
+            var(--color-sand-100) 48%,
+            var(--color-olive-bark-100) 100%
+        );
+    }
+
+    ::selection {
+        color: var(--color-sand-50);
+        background: var(--color-espresso-700);
+    }
 }
 
 @keyframes spin-slow {

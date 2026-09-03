@@ -25,7 +25,7 @@ export default function CoverComments() {
 
     return (
         <div className="mt-10">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-amber-700">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-espresso-700">
                 Comentarios
             </h2>
 
@@ -35,11 +35,11 @@ export default function CoverComments() {
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
                     placeholder="Escribí un comentario..."
-                    className="flex-1 rounded-full bg-white/60 px-4 py-2 text-sm text-neutral-900 shadow-sm ring-1 ring-amber-900/10 backdrop-blur-sm placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                    className="flex-1 rounded-full bg-sand-50/80 px-4 py-2 text-sm text-espresso-900 shadow-sm ring-1 ring-olive-bark-500/20 backdrop-blur-sm placeholder:text-dusty-olive-400 focus:outline-none focus:ring-2 focus:ring-espresso-400"
                 />
                 <button
                     type="submit"
-                    className="rounded-full bg-amber-900 px-4 py-2 text-sm font-medium text-white hover:bg-amber-800 transition-colors"
+                    className="rounded-full bg-espresso-800 px-4 py-2 text-sm font-medium text-sand-50 hover:bg-espresso-700 transition-colors"
                 >
                     Enviar
                 </button>
@@ -47,15 +47,15 @@ export default function CoverComments() {
 
             <div className="mt-4 space-y-3">
                 {comments.length === 0 ? (
-                    <p className="text-sm text-neutral-400">Todavía no hay comentarios.</p>
+                    <p className="text-sm text-dusty-olive-500">Todavía no hay comentarios.</p>
                 ) : (
                     comments.map((comment) => (
                         <div
                             key={comment.id}
-                            className="rounded-lg bg-white/60 p-3 text-sm shadow-sm ring-1 ring-amber-900/5"
+                            className="rounded-xl bg-sand-50/70 p-3 text-sm shadow-sm ring-1 ring-olive-bark-500/15"
                         >
-                            <span className="font-medium text-neutral-900">{comment.author}</span>
-                            <p className="mt-0.5 text-neutral-700">{comment.content}</p>
+                            <span className="font-medium text-espresso-900">{comment.author}</span>
+                            <p className="mt-0.5 text-dusty-olive-800">{comment.content}</p>
                         </div>
                     ))
                 )}

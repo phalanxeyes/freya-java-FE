@@ -30,7 +30,7 @@ export default function CoverView() {
     if (!cover) {
         return (
             <div className="flex min-h-[40vh] items-center justify-center">
-                <span className="text-sm text-neutral-500">Cover no encontrado.</span>
+                <span className="text-sm text-dusty-olive-600">Cover no encontrado.</span>
             </div>
         );
     }
@@ -41,9 +41,9 @@ export default function CoverView() {
                 {/* Columna izquierda: info */}
                 <div className="flex-1 min-w-0">
                     {cover.song && (
-                        <p className="text-sm text-neutral-600">
+                        <p className="text-sm text-dusty-olive-700">
                             Cover de{" "}
-                            <Link to={`/song/${cover.song.id}`} className="font-medium text-neutral-900 hover:underline">
+                            <Link to={`/song/${cover.song.id}`} className="font-medium text-espresso-900 hover:text-espresso-700 hover:underline">
                                 {cover.song.name}
                             </Link>
                         </p>

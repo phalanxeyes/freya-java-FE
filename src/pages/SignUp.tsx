@@ -29,8 +29,8 @@ export default function SignUp() {
 
     return (
         <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center">
-            <h1 className="text-2xl font-bold text-neutral-900">Crear cuenta</h1>
-            <p className="mt-1 text-sm text-neutral-600">
+            <h1 className="text-2xl font-bold text-espresso-900">Crear cuenta</h1>
+            <p className="mt-1 text-sm text-dusty-olive-700">
                 Registrate con tu mail para empezar.
             </p>
 
@@ -61,20 +61,20 @@ export default function SignUp() {
                     minLength={6}
                 />
 
-                {error && <p className="text-sm text-red-600">{error}</p>}
+                {error && <p className="text-sm text-dark-walnut-700">{error}</p>}
 
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full rounded-full bg-amber-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-amber-800 disabled:opacity-50"
+                    className="w-full rounded-full bg-espresso-800 px-4 py-2 text-sm font-medium text-sand-50 transition-colors hover:bg-espresso-700 disabled:opacity-50"
                 >
                     {loading ? "Creando cuenta..." : "Registrarme"}
                 </button>
             </form>
 
-            <p className="mt-6 text-center text-sm text-neutral-600">
+            <p className="mt-6 text-center text-sm text-dusty-olive-700">
                 ¿Ya tenés cuenta?{" "}
-                <Link to="/login" className="font-medium text-amber-800 hover:underline">
+                <Link to="/login" className="font-medium text-espresso-700 hover:underline">
                     Iniciá sesión
                 </Link>
             </p>

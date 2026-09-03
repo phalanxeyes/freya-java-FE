@@ -13,7 +13,7 @@ const formatDuration = (seconds: number): string => {
 export default function SongHeader({ song }: SongHeaderProps) {
     return (
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end">
-            <div className="h-48 w-48 shrink-0 overflow-hidden rounded-lg bg-amber-100 shadow-md sm:h-56 sm:w-56">
+            <div className="h-48 w-48 shrink-0 overflow-hidden rounded-2xl bg-olive-bark-100 shadow-lg shadow-espresso-900/10 ring-1 ring-olive-bark-500/15 sm:h-56 sm:w-56">
                 <img
                     src="https://www.indieground.net/images/blog/2024/indieblog-best-album-covers-2010s-28.jpg"
                     alt={song.name}
@@ -22,15 +22,15 @@ export default function SongHeader({ song }: SongHeaderProps) {
             </div>
 
             <div className="min-w-0">
-                <p className="text-xs font-medium uppercase tracking-wide text-amber-700">
+                <p className="text-xs font-medium uppercase tracking-wide text-espresso-700">
                     Canción
                 </p>
-                <h1 className="mt-1 truncate text-3xl font-bold text-neutral-900 sm:text-4xl">
+                <h1 className="mt-1 truncate text-3xl font-bold text-espresso-900 sm:text-4xl">
                     {song.name}
                 </h1>
 
-                <div className="mt-3 flex flex-wrap items-center gap-x-2 text-sm text-neutral-600">
-                    <span className="text-neutral-400">·</span>
+                <div className="mt-3 flex flex-wrap items-center gap-x-2 text-sm text-dusty-olive-700">
+                    <span className="text-olive-bark-500">·</span>
                     <span>{formatDuration(song.duration)}</span>
                 </div>
             </div>

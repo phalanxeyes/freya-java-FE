@@ -4,7 +4,7 @@ interface CoverPlayerProps {
 
 export default function CoverPlayer({ videoId }: CoverPlayerProps) {
     return (
-        <div className="mx-auto aspect-video w-full max-w-md overflow-hidden rounded-lg bg-neutral-900 shadow-md">
+        <div className="mx-auto aspect-video w-full max-w-md overflow-hidden rounded-2xl bg-espresso-950 shadow-lg shadow-espresso-900/20 ring-1 ring-espresso-800/20">
             {videoId ? (
                 <iframe
                     className="h-full w-full"
@@ -14,7 +14,7 @@ export default function CoverPlayer({ videoId }: CoverPlayerProps) {
                     allowFullScreen
                 />
             ) : (
-                <div className="flex h-full w-full items-center justify-center text-sm text-neutral-500">
+                <div className="flex h-full w-full items-center justify-center text-sm text-olive-bark-300">
                     Sin video disponible
                 </div>
             )}

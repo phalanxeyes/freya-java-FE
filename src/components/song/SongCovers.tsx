@@ -10,7 +10,7 @@ export default function SongCovers({ covers }: SongCoversProps) {
 
     return (
         <div className="mt-10">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-amber-700">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-espresso-700">
                 Covers
             </h2>
             <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">

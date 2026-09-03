@@ -53,14 +53,14 @@ export default function SongCard({ id, duration, name, imgUrl }: SongCardProps) 
             style={{
                 transform: `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
             }}
-            className={`w-full max-w-[200px] rounded-lg p-4 ring-1 ring-amber-900/5 backdrop-blur-sm transition-all duration-200 ease-out group ${
-                isHovering ? "bg-white shadow-md" : "bg-white/60 shadow-sm"
+            className={`w-full max-w-[200px] rounded-2xl p-4 ring-1 ring-olive-bark-500/15 backdrop-blur-sm transition-all duration-200 ease-out group ${
+                isHovering ? "bg-sand-50 shadow-md shadow-espresso-900/10" : "bg-sand-50/65 shadow-sm"
             }`}
         >
             <Link
                 to={"/song/" + id}
                 title={name}
-                className="relative block aspect-square w-full overflow-hidden rounded bg-amber-100 shadow-sm"
+                className="relative block aspect-square w-full overflow-hidden rounded-xl bg-olive-bark-100 shadow-sm"
             >
                 <img
                     src={imgUrl || "https://www.indieground.net/images/blog/2024/indieblog-best-album-covers-2010s-28.jpg"}
@@ -70,10 +70,10 @@ export default function SongCard({ id, duration, name, imgUrl }: SongCardProps) 
             </Link>
 
             <div className="mt-3">
-                <h3 className="truncate text-sm font-semibold text-neutral-900" title={name}>
+                <h3 className="truncate text-sm font-semibold text-espresso-900" title={name}>
                     {name}
                 </h3>
-                <p className="mt-1 text-xs text-neutral-500">
+                <p className="mt-1 text-xs text-dusty-olive-600">
                     {formatDuration(duration)}
                 </p>
             </div>
