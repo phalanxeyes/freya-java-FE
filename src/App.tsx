@@ -5,6 +5,7 @@ import SongView from "@pages/SongView.tsx";
 import CoverView from "@pages/CoverView.tsx";
 import SignUp from "@pages/SignUp.tsx";
 import Login from "@pages/Login.tsx";
+import AdminView from "@pages/AdminView.tsx";
 import { healthService } from "@api/healthService.ts";
 import { useEffect, useState } from 'react';
 
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/cover/:id" element={<CoverView />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
+                <Route path="/admin" element={<AdminView />} />
             </Routes>
         </MainLayout>
     )
