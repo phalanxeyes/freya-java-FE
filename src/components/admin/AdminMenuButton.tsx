@@ -12,7 +12,7 @@ export default function AdminMenuButton({ item, isActive, onSelect }: AdminMenuB
             type="button"
             onClick={() => onSelect(item.id)}
             aria-current={isActive ? "page" : undefined}
-            className={`w-full rounded-xl px-3 py-3 text-left transition-colors ${
+            className={`w-full cursor-pointer rounded-xl px-3 py-3 text-left transition-colors ${
                 isActive
                     ? "bg-olive-bark-500 text-espresso-950 shadow-sm"
                     : "text-sand-100 hover:bg-espresso-800 hover:text-sand-50"

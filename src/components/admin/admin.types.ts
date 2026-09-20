@@ -1,4 +1,4 @@
-export type AdminSection = "overview" | "songs" | "covers" | "users";
+export type AdminSection = "songs" | "covers";
 
 export interface AdminMenuItem {
     id: AdminSection;
