@@ -7,7 +7,7 @@ export default function Login() {
     const { login } = useAuth();
     const navigate = useNavigate();
 
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -17,10 +17,10 @@ export default function Login() {
         setError(null);
         setLoading(true);
         try {
-            await login({ email, password });
+            await login({ username, password });
             navigate("/");
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Error al iniciar sesión");
+            setError(err instanceof Error ? err.message : String(err));
         } finally {
             setLoading(false);
         }
@@ -30,22 +30,24 @@ export default function Login() {
         <div className="mx-auto flex min-h-[70vh] max-w-sm flex-col justify-center">
             <h1 className="text-2xl font-bold text-espresso-900">Iniciar sesión</h1>
             <p className="mt-1 text-sm text-dusty-olive-700">
-                Entrá con tu mail y contraseña.
+                Entrá con tu usuario y contraseña.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                 <AuthInput
-                    id="email"
-                    label="Email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    id="username"
+                    label="Usuario"
+                    type="text"
+                    autoComplete="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     required
                 />
                 <AuthInput
                     id="password"
                     label="Contraseña"
                     type="password"
+                    autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required

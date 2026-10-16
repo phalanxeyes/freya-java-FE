@@ -1,20 +1,44 @@
-import ky from 'ky';
+import ky, { HTTPError } from 'ky';
 
 export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 export const API_BASE_URL = `${API_URL}/api/`;
+
+export const TOKEN_KEY = "freya_token";
+export const USER_KEY = "freya_user";
+
+export function getStoredToken(): string | null {
+  try {
+    return localStorage.getItem(TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function getAuthHeaders(): Record<string, string> {
+  const token = getStoredToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 export const apiClient = ky.create({
   baseUrl: API_BASE_URL,
   timeout: 10000,
   hooks: {
     beforeRequest: [
-      (_request) => {
-        // TODO: AUTH HEADERS HERE!
+      ({ request }) => {
+        const token = getStoredToken();
+        if (token) {
+          request.headers.set('Authorization', `Bearer ${token}`);
+        }
       },
     ],
     beforeError: [
       (state) => {
-        console.error(`API error:${state.error.message}`);
+        const { error } = state;
+        if (error instanceof HTTPError) {
+          console.error(`API error ${error.response.status}:`, error.data);
+        } else {
+          console.error(`API error: ${error.message}`);
+        }
         return state.error;
       },
     ],

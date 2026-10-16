@@ -47,14 +47,13 @@ export interface SongDTO {
     album: AlbumDTO;
 }
 
-export interface CreateUserDTO {
-    userName: string;
-    email: string;
+export interface UserSignUpDTO {
+    username: string;
     password: string;
 }
 
 export interface UserDTO {
     id: number;
-    userName: string;
+    username: string;
     createdAt: Date;
 }

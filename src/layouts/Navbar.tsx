@@ -20,7 +20,7 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
                 {isAuthenticated ? (
                     <>
-                        <span className="text-sm text-dusty-olive-700">Hola, {user?.userName}</span>
+                        <span className="text-sm text-dusty-olive-700">Hola, {user?.username}</span>
                         <button
                             onClick={handleLogout}
                             className="text-sm text-dusty-olive-700 hover:text-espresso-800 transition-colors"
