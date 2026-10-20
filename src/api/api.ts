@@ -1,4 +1,5 @@
-import ky, { HTTPError } from 'ky';
+import ky from 'ky';
+import { withApiError } from './apiError';
 
 export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 export const API_BASE_URL = `${API_URL}/api/`;
@@ -31,17 +32,6 @@ export const apiClient = ky.create({
         }
       },
     ],
-    beforeError: [
-      (state) => {
-        const { error } = state;
-        if (error instanceof HTTPError) {
-          console.error(`API error ${error.response.status}:`, error.data);
-        } else {
-          console.error(`API error: ${error.message}`);
-        }
-        return state.error;
-      },
-    ],
   },
 });
 
@@ -51,18 +41,18 @@ export function createResourceClient(resourcePath: string) {
 
   return {
     getAll: <TResponse>(): Promise<TResponse> =>
-      apiClient.get(base).json<TResponse>(),
+      withApiError(apiClient.get(base).json<TResponse>()),
 
     getById: <TResponse>(id: string): Promise<TResponse> =>
-      apiClient.get(`${base}/${id}`).json<TResponse>(),
+      withApiError(apiClient.get(`${base}/${id}`).json<TResponse>()),
 
     create: <TDto, TResponse = TDto>(data: TDto): Promise<TResponse> =>
-      apiClient.post(base, { json: data }).json<TResponse>(),
+      withApiError(apiClient.post(base, { json: data }).json<TResponse>()),
 
     update: <TDto, TResponse = TDto>(id: string, data: TDto): Promise<TResponse> =>
-      apiClient.put(`${base}/${id}`, { json: data }).json<TResponse>(),
+      withApiError(apiClient.put(`${base}/${id}`, { json: data }).json<TResponse>()),
 
     delete: (id: string): Promise<void> =>
-      apiClient.delete(`${base}/${id}`).then(() => undefined),
+      withApiError(apiClient.delete(`${base}/${id}`).then(() => undefined)),
   };
 }

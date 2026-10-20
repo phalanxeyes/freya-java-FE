@@ -1,7 +1,15 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "@context/AuthContext";
+import { getApiErrorMessage } from "@api/apiError";
 import AuthInput from "@components/auth/AuthInput";
+
+type LoginField = "username" | "password";
+
+const INITIAL_TOUCHED: Record<LoginField, boolean> = {
+    username: false,
+    password: false,
+};
 
 export default function Login() {
     const { login } = useAuth();
@@ -9,18 +17,39 @@ export default function Login() {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [touched, setTouched] = useState(INITIAL_TOUCHED);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+
+    // Login only checks presence: credentials are validated by the backend.
+    const usernameError = username.trim() ? null : "Ingresá tu usuario.";
+    const passwordError = password ? null : "Ingresá tu contraseña.";
+
+    const markTouched = (field: LoginField) => {
+        setTouched((current) => (current[field] ? current : { ...current, [field]: true }));
+    };
+
+    const clearApiError = () => {
+        if (error) setError(null);
+    };
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError(null);
+        setTouched({ username: true, password: true });
+
+        if (usernameError || passwordError) {
+            const firstInvalid: LoginField = usernameError ? "username" : "password";
+            document.getElementById(firstInvalid)?.focus();
+            return;
+        }
+
         setLoading(true);
         try {
-            await login({ username, password });
+            await login({ username: username.trim(), password });
             navigate("/");
         } catch (err) {
-            setError(err instanceof Error ? err.message : String(err));
+            setError(getApiErrorMessage(err));
         } finally {
             setLoading(false);
         }
@@ -33,15 +62,20 @@ export default function Login() {
                 Entrá con tu usuario y contraseña.
             </p>
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
                 <AuthInput
                     id="username"
                     label="Usuario"
                     type="text"
                     autoComplete="username"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={(e) => {
+                        setUsername(e.target.value);
+                        clearApiError();
+                    }}
+                    onBlur={() => markTouched("username")}
                     required
+                    error={touched.username ? usernameError : null}
                 />
                 <AuthInput
                     id="password"
@@ -49,11 +83,20 @@ export default function Login() {
                     type="password"
                     autoComplete="current-password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                        setPassword(e.target.value);
+                        clearApiError();
+                    }}
+                    onBlur={() => markTouched("password")}
                     required
+                    error={touched.password ? passwordError : null}
                 />
 
-                {error && <p className="text-sm text-dark-walnut-700">{error}</p>}
+                {error && (
+                    <p role="alert" className="text-sm font-medium text-dark-walnut-700">
+                        {error}
+                    </p>
+                )}
 
                 <button
                     type="submit"

@@ -1,5 +1,5 @@
-import { HTTPError } from "ky";
 import { apiClient } from "./api";
+import { ApiError, formatUnknownError, toApiError } from "./apiError";
 import type { UserDTO, UserSignUpDTO } from "./api.d";
 
 export type LoginPayload = UserSignUpDTO;
@@ -11,8 +11,9 @@ export type RegisterPayload = UserSignUpDTO;
  *   POST /api/auth/signin  body UserSignUpDTO { username, password } -> raw JWT string (text/plain)
  *   POST /api/auth/signup  body UserSignUpDTO { username, password } -> UserDTO { id, username, createdAt }
  *
- * Error messages are surfaced verbatim from the backend.
- * The frontend does not invent or map them.
+ * Error messages are surfaced verbatim from the backend `message` field.
+ * If the backend omits it, the shared API error helper falls back to
+ * `Unknown error (<status>)`. The frontend does not invent or map messages.
  */
 function toAuthBody(payload: LoginPayload | RegisterPayload): UserSignUpDTO {
     return { username: payload.username.trim(), password: payload.password };
@@ -20,36 +21,6 @@ function toAuthBody(payload: LoginPayload | RegisterPayload): UserSignUpDTO {
 
 function isJwtShape(token: string): boolean {
     return token.split(".").length === 3;
-}
-
-/**
- * Extract the backend error message verbatim from ky's pre-parsed `error.data`.
- * ky consumes the response body when building HTTPError, so `error.response.text()`
- * is unusable here. Spring ProblemDetail bodies expose `message`;
- * Spring default error bodies expose `error`.
- */
-function backendMessage(error: unknown): string {
-    if (error instanceof HTTPError) {
-        const data = error.data as unknown;
-        if (typeof data === "string" && data.trim() && !/^</.test(data.trim())) {
-            return data.trim();
-        }
-        if (data && typeof data === "object") {
-            const body = data as Record<string, unknown>;
-            for (const key of ["message", "error", "title"]) {
-                const value = body[key];
-                if (typeof value === "string" && value.trim()) return value.trim();
-            }
-            try {
-                return JSON.stringify(data);
-            } catch {
-                // fall through to status line
-            }
-        }
-        return `${error.response.status} ${error.response.statusText}`.trim();
-    }
-    if (error instanceof Error) return error.message;
-    return String(error);
 }
 
 /** Decode the JWT payload and return the `sub` (username). Null if not decodable. */
@@ -86,21 +57,24 @@ export const authService = {
         try {
             // `Accept: */*`, NOT ky's `.text()` default (`text/plain`):
             // with `text/plain` Spring answers 401 with an EMPTY body,
-            // with `*/*` it returns its JSON error body (`error`/`message`).
+            // with `*/*` it returns its JSON error body (`message`).
             // Success (JWT as text/plain) is unaffected: it matches `*/*`.
-            const token = (await apiClient
-                .post("auth/signin", {
-                    json: toAuthBody(payload),
-                    headers: { accept: "*/*" },
-                })
-                .text()).trim();
+            const response = await apiClient.post("auth/signin", {
+                json: toAuthBody(payload),
+                headers: { accept: "*/*" },
+            });
+            const token = (await response.text()).trim();
             if (!token || !isJwtShape(token)) {
-                // Non-JWT 200 body is itself a backend message: surface it verbatim.
-                throw new Error(token);
+                // A non-JWT 200 body is a backend message; an empty body is a
+                // contract break, so use the status fallback.
+                throw new ApiError(
+                    token || formatUnknownError(response.status),
+                    response.status,
+                );
             }
             return token;
         } catch (error) {
-            throw new Error(backendMessage(error));
+            throw toApiError(error);
         }
     },
 
@@ -112,17 +86,11 @@ export const authService = {
         try {
             // .json() sends `Accept: application/json`, matching what /signup produces.
             // (.text() sends `Accept: text/plain` and Spring answers 406.)
-            const user = await apiClient
+            return await apiClient
                 .post("auth/signup", { json: toAuthBody(payload) })
                 .json<UserDTO>();
-            if (typeof user?.username !== "string") {
-                // Contract drift (e.g. backend mapper leaving username null):
-                // don't block the signup -> signin chain; signin is authoritative.
-                console.warn("Unexpected /signup response shape:", user);
-            }
-            return user;
         } catch (error) {
-            throw new Error(backendMessage(error));
+            throw toApiError(error);
         }
     },
 };

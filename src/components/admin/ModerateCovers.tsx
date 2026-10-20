@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
 import { coverService } from "@api/coverService";
+import { getApiErrorMessage } from "@api/apiError";
 import type { CoverDTO } from "@api/api.d";
 import LoadingState from "@components/LoadingState";
 
@@ -16,7 +17,7 @@ export default function ModerateCovers() {
         try {
             setCovers(await coverService.getPending());
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Error al cargar pendientes");
+            setError(getApiErrorMessage(err));
         } finally {
             setLoading(false);
         }
@@ -34,7 +35,7 @@ export default function ModerateCovers() {
             else await coverService.reject(String(id));
             setCovers((prev) => prev.filter((c) => c.id !== id));
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Error en la moderación");
+            setError(getApiErrorMessage(err));
         } finally {
             setActingId(null);
         }

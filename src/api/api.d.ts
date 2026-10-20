@@ -57,3 +57,20 @@ export interface UserDTO {
     username: string;
     createdAt: Date;
 }
+
+export interface UserPasswordValidationsDTO {
+    required: boolean;
+    min: number | null;
+    max: number | null;
+}
+
+export interface UserUsernameValidationsDTO {
+    required: boolean;
+    min: number | null;
+    max: number | null;
+}
+
+export interface UserValidationsDTO {
+    password: UserPasswordValidationsDTO;
+    username: UserUsernameValidationsDTO;
+}

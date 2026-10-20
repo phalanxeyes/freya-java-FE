@@ -1,8 +1,10 @@
 import { useParams, Link } from "react-router";
 import { useEffect, useState } from "react";
 import { coverService } from "@api/coverService";
+import { getApiErrorMessage } from "@api/apiError";
 import type { CoverDTO } from "@api/api.d";
 import LoadingState from "@components/LoadingState";
+import ErrorState from "@components/ErrorState";
 import CoverPlayer from "@components/cover/CoverPlayer";
 import CoverUploaderCard from "@components/cover/CoverUploaderCard";
 import CoverComments from "@components/cover/CoverComments";
@@ -11,20 +13,39 @@ export default function CoverView() {
     const { id } = useParams<{ id: string }>();
 
     const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const [cover, setCover] = useState<CoverDTO>();
 
     useEffect(() => {
         if (typeof id !== "string") return;
 
+        let cancelled = false;
         setLoading(true);
-        coverService.getById(id).then((c) => {
-            setCover(c);
-            setLoading(false);
-        });
+        setError(null);
+        setCover(undefined);
+
+        coverService.getById(id)
+            .then((result) => {
+                if (!cancelled) setCover(result);
+            })
+            .catch((err) => {
+                if (!cancelled) setError(getApiErrorMessage(err));
+            })
+            .finally(() => {
+                if (!cancelled) setLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
     }, [id]);
 
     if (loading) {
         return <LoadingState />;
+    }
+
+    if (error) {
+        return <ErrorState message={error} />;
     }
 
     if (!cover) {

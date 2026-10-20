@@ -8,21 +8,31 @@ import Login from "@pages/Login.tsx";
 import AdminView from "@pages/AdminView.tsx";
 import NotFound from "@pages/NotFound.tsx";
 import { healthService } from "@api/healthService.ts";
+import { getApiErrorMessage } from "@api/apiError";
 import { useEffect, useState } from 'react';
 
 function App() {
     const [isDown, setIsDown] = useState(false);
+    const [serviceError, setServiceError] = useState<string | null>(null);
 
     useEffect(() => {
-        healthService.getHealth().catch((_err) => {
-            
-            console.error('Health check failed:', _err);
+        healthService.getHealth().catch((err) => {
+            setServiceError(getApiErrorMessage(err));
             setIsDown(true);
         });
     }, []);
 
     if (isDown) {
-        return <h1 className="px-6 py-16 text-center text-espresso-800">Service Down</h1>;
+        return (
+            <div className="flex min-h-[40vh] flex-col items-center justify-center gap-2 px-6 text-center">
+                <h1 className="text-espresso-800">Service Down</h1>
+                {serviceError && (
+                    <p role="alert" className="text-sm text-dark-walnut-700">
+                        {serviceError}
+                    </p>
+                )}
+            </div>
+        );
     }
 
     return (

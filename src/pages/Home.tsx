@@ -4,31 +4,50 @@ import SongCoverCard from '@components/song/SongCoverCard.tsx'
 import Carousel from '@components/Carousel.tsx'
 import { songService } from '@api/songService'
 import { coverService } from '@api/coverService'
+import { getApiErrorMessage } from '@api/apiError'
 import type { CoverDTO, SongDTO } from '@api/api.d'
 import LoadingState from "@components/LoadingState.tsx";
+import ErrorState from "@components/ErrorState.tsx";
 
 export default function Home() {
     const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const [songs, setSongs] = useState<SongDTO[]>([]);
     const [covers, setCovers] = useState<CoverDTO[]>([]);
 
     useEffect(() => {
+        let cancelled = false;
+
         setLoading(true);
-        Promise.all([songService.getAll(), coverService.getAll()]).then(
-            ([songsResult, coversResult]) => {
+        setError(null);
+        Promise.all([songService.getAll(), coverService.getAll()])
+            .then(([songsResult, coversResult]) => {
+                if (cancelled) return;
                 setSongs(songsResult);
                 setCovers(
                     [...coversResult].sort(
                     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                     )
                 );
-                setLoading(false);
-            }
-        );
+            })
+            .catch((err) => {
+                if (!cancelled) setError(getApiErrorMessage(err));
+            })
+            .finally(() => {
+                if (!cancelled) setLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
     if (loading) {
         return <LoadingState />;
+    }
+
+    if (error) {
+        return <ErrorState message={error} />;
     }
 
     return (

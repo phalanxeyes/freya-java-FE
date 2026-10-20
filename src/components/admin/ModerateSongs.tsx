@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { songService } from "@api/songService";
+import { getApiErrorMessage } from "@api/apiError";
 import type { CreateSongDTO, SongDTO } from "@api/api.d";
 import LoadingState from "@components/LoadingState";
 import AuthInput from "@components/auth/AuthInput";
@@ -21,7 +22,7 @@ export default function ModerateSongs() {
         try {
             setSongs(await songService.getAll());
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Error al cargar canciones");
+            setError(getApiErrorMessage(err));
         } finally {
             setLoading(false);
         }
@@ -57,7 +58,7 @@ export default function ModerateSongs() {
             }
             setModalOpen(false);
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Error al guardar");
+            setError(getApiErrorMessage(err));
         } finally {
             setSaving(false);
         }
@@ -70,7 +71,7 @@ export default function ModerateSongs() {
             await songService.delete(String(song.id));
             setSongs((prev) => prev.filter((s) => s.id !== song.id));
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Error al eliminar");
+            setError(getApiErrorMessage(err));
         }
     };
 

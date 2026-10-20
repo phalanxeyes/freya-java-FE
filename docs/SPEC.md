@@ -80,8 +80,9 @@ Layout global: `MainLayout + Navbar` (`src/layouts/MainLayout.tsx`, `src/layouts
 - Si `cover` null → “Cover no encontrado.”
 
 ### Login / Signup
-- Login (`src/pages/Login.tsx`): `email + password` → `POST auth/login` → guarda `token+user`, navega a `/`. Error visible en pantalla.
-- Signup (`src/pages/SignUp.tsx`): `name + email + password (min 6)` → `POST auth/register` → igual que login. Link cruzado login↔signup.
+- Login (`src/pages/Login.tsx`): `username + password` → `POST auth/signin` → guarda `token+user`, navega a `/`. Error del back-end visible tal cual (`message`). Validación local solo de campos requeridos: la autoridad de credenciales es el back-end.
+- Signup (`src/pages/SignUp.tsx`): `username + password + confirmación` → `POST auth/signup` → igual que login. Las reglas (`required/min/max`) se leen de `GET configs/user`; se validan en vivo (contador + mensaje al perder foco/cambiar) y otra vez al enviar. Si no se pueden leer las validaciones, se muestra el error y se bloquea el envío.
+- Link cruzado login↔signup.
 - Navbar cambia según `isAuthenticated`.
 
 ### Admin (`/admin`, `src/pages/AdminView.tsx`)
@@ -92,9 +93,25 @@ Hoy placeholders (`ModerateSongs.tsx`, `ModerateCovers.tsx`). Comportamiento esp
 - Album: como `artist` es string, el alta de canción debe permitir elegir/crear álbum con `name + artist`. `CreateAlbumDTO` ya existe en back.
 
 ### Transversales
-- `Service Down`: si `GET health` falla (`src/App.tsx:16`), muestra “Service Down” en lugar de la app.
+- `Service Down`: si `GET health` falla (`src/App.tsx`), muestra “Service Down” en lugar de la app, junto con el `message` del back-end si existe.
 - `NotFound`: ruta desconocida.
-- Errores API visibles en UI (formularios y “no encontrado”), no solo consola.
+- Errores API visibles en UI (formularios, listados y “no encontrado”). **Nunca se loguean en consola.**
+
+#### Errores de API (contrato FE–BE)
+- **El front NO loguea errores** (ni `console.error` ni `console.warn` por fallos de API). Tampoco inventa, traduce ni mapea mensajes de error del back-end.
+- Todo error HTTP del back-end debe traer un campo `message` en el body. El FE muestra ese `message` tal cual.
+- Si la respuesta de error no trae `message` (ausente, vacío o no-string), el FE usa el status HTTP y muestra `Unknown error (<status>)` (ej. `Unknown error (401)`). No se usan `error`, `title` ni `detail` como reemplazo.
+- Si no hay status HTTP (fallo de red/timeout), muestra `Unknown error`.
+- Los mensajes de validación del formulario son UX local y no reemplazan los errores del back-end.
+- Si un mensaje falta o no es claro, **se reporta como falencia del back-end** y no se parchea en el FE.
+- Excepción acotada: si `GET configs/user` responde 200 con una forma que el FE no puede interpretar, se muestra un error de lectura de configuración; el FE no inventa reglas.
+
+**Falencias BE detectadas (no compensadas en el FE):**
+- `POST auth/signin` con credenciales inválidas devuelve 401 sin `message` (Spring expone `error: "Unauthorized"`). Debe devolver 401 con `message: "Invalid credentials"` (handler de `BadCredentialsException`/`AuthenticationException`).
+- `AuthEntryPointJwt` usa `sendError`, por lo que los 401 de endpoints protegidos tampoco traen `message`.
+- `form_rules.yml` declara password `min: 6`, pero `UserService.isValidPwd` exige longitud `> 6` (7+).
+- Las reglas de `username` (`min/max`) no se validan en `UserService`.
+- La documentación OpenAPI no declara el esquema de error con `message`.
 
 ## 7. Casos de uso incluidos
 
@@ -124,17 +141,24 @@ Hoy placeholders (`ModerateSongs.tsx`, `ModerateCovers.tsx`). Comportamiento esp
 `src/api/api.ts:4` usa base `${API_URL}/api/` (`API_URL=http://localhost:8080` en `.env`). Patrón `createResourceClient`: `GET all, GET /:id, POST, PUT /:id, DELETE /:id`.
 
 Endpoints usados hoy por el FE:
-`POST auth/login, POST auth/register, GET songs, GET songs/:id, POST songs, PUT songs/:id, DELETE songs/:id, GET covers, GET covers/pending, GET covers/:id, POST covers/:id/approve, POST covers/:id/reject, GET health`.
+`POST auth/signin, POST auth/signup, GET configs/user, GET songs, GET songs/:id, POST songs, PUT songs/:id, DELETE songs/:id, GET covers, GET covers/pending, GET covers/:id, POST covers/:id/approve, POST covers/:id/reject, GET health`.
+
+`GET configs/user` → `UserValidationsDTO`:
+`{ username: { required, min, max }, password: { required, min, max } }`.
+El FE lo consume en Signup para reglas dinámicas. Si falla la lectura, muestra error y bloquea el envío.
 
 Futuros (ABMC + moderación) siguen el mismo patrón sobre `songs`, `covers`, `albums`. **No se congelan aquí: la referencia viva es `docs/api/api-docs.json` (Swagger del BE, actualizado por versión de API).** `api.d.ts` se regenera desde SpringBoot.
 
-Pendiente FE: enviar `Authorization` header (`TODO` en `src/api/api.ts:12`).
+El cliente envía `Authorization: Bearer <token>` cuando hay sesión (`src/api/api.ts`).
+Todos los errores de API se normalizan en `src/api/apiError.ts`: se lee únicamente `message`; si falta, se usa `Unknown error (<status>)`.
 
 ## 9. Estado actual vs pendiente
 
 | Área | Estado |
 |---|---|
 | Home, Song, Cover, Auth, Navbar | Implementado funcional |
+| Errores API | `message` del BE; sin logs en FE; fallback `Unknown error (<status>)` |
+| Validaciones dinámicas (`configs/user`) | Implementado en Signup (reglas, contador y errores inline) |
 | `CoverPlayer videoId=null` | Stub → derivar de `youtubeUrl` |
 | `CoverComments` local | Stub, fuera de scope |
 | `ModerateSongs/Covers` | Placeholders → CU2/CU3 |
@@ -147,4 +171,4 @@ Pendiente FE: enviar `Authorization` header (`TODO` en `src/api/api.ts:12`).
 - Central: https://github.com/phalanxeyes/freya-java
 - FE: https://github.com/phalanxeyes/freya-java-FE
 - BE: https://github.com/phalanxeyes/freya-java-BE
-- Tipos FE: `src/api/api.d.ts` (generado 2026-08-28)
+- Tipos FE: `src/api/api.d.ts` (generado 2026-08-28; DTOs de `configs/user` agregados desde `api-docs.json` el 2026-10-20)
