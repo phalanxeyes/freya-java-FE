@@ -24,8 +24,8 @@ export function toUserFieldRule(
 ): UserFieldRule {
     return {
         required: rule.required,
-        min: rule.min ?? null,
-        max: rule.max ?? null,
+        min: rule.min,
+        max: rule.max,
     };
 }
 

@@ -1,10 +1,13 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import { TOKEN_KEY, USER_KEY } from "@api/api";
-import { authService, isTokenExpired, parseUsernameFromToken, type LoginPayload, type RegisterPayload } from "@api/authService";
+import { authService, isTokenExpired, type LoginPayload, type RegisterPayload } from "@api/authService";
+import type { AuthUserDTO, UserDTO } from "@api/api.d";
 
-/** Minimal session user. The backend only returns a JWT (sub = username), no user object. */
+/** Session user. `createdAt` is kept as the ISO string the API actually sends. */
 export interface AuthUser {
+    id: number;
     username: string;
+    createdAt: string;
 }
 
 interface AuthContextValue {
@@ -18,23 +21,35 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-function readStoredSession(): { token: string | null; user: AuthUser | null } {
+function toAuthUser(user: UserDTO): AuthUser {
+    const createdAt =
+        user.createdAt instanceof Date ? user.createdAt.toISOString() : String(user.createdAt);
+    return { id: user.id, username: user.username, createdAt };
+}
+
+function isAuthUser(value: unknown): value is AuthUser {
+    if (!value || typeof value !== "object") return false;
+    const candidate = value as Partial<AuthUser>;
+    return typeof candidate.id === "number" && typeof candidate.username === "string";
+}
+
+/** Reads the persisted session, discarding expired tokens or malformed users. */
+function readStoredSession(): { token: string; user: AuthUser } | null {
     try {
         const token = localStorage.getItem(TOKEN_KEY);
         const rawUser = localStorage.getItem(USER_KEY);
-        if (!token || isTokenExpired(token)) return { token: null, user: null };
-        if (rawUser) {
-            const parsed = JSON.parse(rawUser) as { username?: string; userName?: string };
-            // Compat with sessions stored before the username casing fix.
-            const username = parsed.username ?? parsed.userName;
-            return { token, user: username ? { username } : null };
-        }
-        // Backwards compat: derive the username from the JWT subject.
-        const username = parseUsernameFromToken(token);
-        return { token, user: username ? { username } : null };
+        if (!token || isTokenExpired(token) || !rawUser) return null;
+
+        const parsed: unknown = JSON.parse(rawUser);
+        return isAuthUser(parsed) ? { token, user: parsed } : null;
     } catch {
-        return { token: null, user: null };
+        return null;
     }
+}
+
+function clearStoredSession() {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -44,37 +59,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Restaurar sesión al cargar la app (descarta tokens expirados)
     useEffect(() => {
         const stored = readStoredSession();
-        if (!stored.token) {
-            localStorage.removeItem(TOKEN_KEY);
-            localStorage.removeItem(USER_KEY);
+        if (!stored) {
+            clearStoredSession();
             return;
         }
         setToken(stored.token);
         setUser(stored.user);
     }, []);
 
-    const persistSession = (newToken: string, newUser: AuthUser) => {
-        localStorage.setItem(TOKEN_KEY, newToken);
-        localStorage.setItem(USER_KEY, JSON.stringify(newUser));
-        setToken(newToken);
-        setUser(newUser);
+    const persistSession = ({ user: sessionUser, accessToken }: AuthUserDTO) => {
+        const nextUser = toAuthUser(sessionUser);
+        localStorage.setItem(TOKEN_KEY, accessToken);
+        localStorage.setItem(USER_KEY, JSON.stringify(nextUser));
+        setToken(accessToken);
+        setUser(nextUser);
     };
 
     const login = async (payload: LoginPayload) => {
-        const newToken = await authService.login(payload);
-        const username = parseUsernameFromToken(newToken) ?? payload.username.trim();
-        persistSession(newToken, { username });
+        persistSession(await authService.login(payload));
     };
 
     const register = async (payload: RegisterPayload) => {
-        await authService.register(payload);
-        // /signup devuelve UserDTO sin token: encadenar signin para dejar la sesión iniciada.
-        await login(payload);
+        // /signup devuelve el token: la cuenta queda logueada sin un signin extra.
+        persistSession(await authService.register(payload));
     };
 
     const logout = () => {
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem(USER_KEY);
+        clearStoredSession();
         setToken(null);
         setUser(null);
     };
